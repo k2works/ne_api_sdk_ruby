@@ -13,3 +13,8 @@
 *.a
 mkmf.log
 .idea
+.vagrant
+Berksfile
+Berksfile.lock
+metadata.rb
+Vagrantfile
