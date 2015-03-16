@@ -1,0 +1,3 @@
+#!/usr/bin/env ruby
+
+require 'ne_api_sdk_ruby'
