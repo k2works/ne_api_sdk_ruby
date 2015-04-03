@@ -1,5 +1,2 @@
 require "ne_api_sdk_ruby/version"
-
-module NeApiSdkRuby
-  # Your code goes here...
-end
+require 'ne_api_sdk_ruby/ne_api_client'

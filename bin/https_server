@@ -1,0 +1,12 @@
+require 'webrick'
+require 'webrick/https'
+
+server = WEBrick::HTTPServer.new(
+    :BindAddress => '127.0.0.1',
+    :Port => 3000,
+    :DocumentRoot => '.',
+    :SSLEnable  => true,
+    :SSLCertificate => OpenSSL::X509::Certificate.new(open('/vagrant/.ssl/dev.crt.pem').read),
+    :SSLPrivateKey => OpenSSL::PKey::RSA.new(open('/vagrant/.ssl/dev.pem').read))
+Signal.trap('INT') { server.shutdown }
+server.start

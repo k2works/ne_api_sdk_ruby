@@ -4,6 +4,8 @@
 # Author:: K.Kakigi
 # Version:: 0.1.0
 # License:: Ruby License
+require 'faraday'
+require 'faraday_middleware'
 
 module NeApiSdkRuby
   class NeApiClient
@@ -14,12 +16,16 @@ module NeApiSdkRuby
 
     #const API_SERVER_HOST   = 'https://api.next-engine.org' ;
     #const NE_SERVER_HOST    = 'https://base.next-engine.org' ;
+    API_SERVER_HOST   = 'https://api.next-engine.org'
+    NE_SERVER_HOST    = 'https://base.next-engine.org'
 
     #
     # 認証に用いるURLのパスを定義
     #
     #const PATH_LOGIN	= '/users/sign_in/' ;	// NEログイン
     #const PATH_OAUTH	= '/api_neauth/' ;		// API認証
+    PATH_LOGIN	= '/users/sign_in/' 	# NEログイン
+    PATH_OAUTH	= '/api_neauth/'		  # API認証
 
     #
     # APIのレスポンスの処理結果ステータスの定義
@@ -27,12 +33,17 @@ module NeApiSdkRuby
     #const RESULT_SUCCESS	= 'success' ;	// 成功
     #const RESULT_ERROR		= 'error' ;		// 失敗
     #const RESULT_REDIRECT	= 'redirect';	// 要リダイレクト
+    RESULT_SUCCESS	= 'success'  # 成功
+    RESULT_ERROR		= 'error'    # 失敗
+    RESULT_REDIRECT	= 'redirect' # 要リダイレクト
 
     #
     # APIの接続情報(__constructのヘッダーコメントを参照して下さい)
     #
     #public		$_access_token	= NULL ;
     #public		$_refresh_token	= NULL ;
+    attr_accessor :access_token
+    attr_accessor :refresh_token
 
     #
     # SDK内部でAPIを利用する為に使うメンバ変数
@@ -72,13 +83,13 @@ module NeApiSdkRuby
     #	注意：この値はユーザー毎(uid毎)に管理する必要があります。別のユーザーの値を指定してSDKを実行すると
     #		  他ユーザーの情報にアクセスしてしまうため、厳重にご注意をお願いします。
     #
-    # @param	string	$client_id		クライアントID。
-    # @param	string	$client_secret	クライアントシークレット。
-    # @param	string	$redirect_uri	ヘッダーコメント参照。
-    # @param	string	$access_token	同上。
-    # @param	string	$refresh_token	同上。
+    # @param	[string]	client_id		クライアントID。
+    # @param	[string]	client_secret	クライアントシークレット。
+    # @param	[string]	redirect_uri	ヘッダーコメント参照。
+    # @param	[string]	access_token	同上。
+    # @param	[string]	refresh_token	同上。
     # @return	void
-    def construct(client_id, client_secret, redirect_uri = NULL, access_token = NULL, refresh_token = NULL)
+    def initialize(client_id, client_secret, redirect_uri = nil, access_token = nil, refresh_token = nil)
 
     end
 =begin
@@ -220,7 +231,7 @@ module NeApiSdkRuby
 		curl_close($this->_curl);
 	}
 =end
-
+private
     # メンバ変数にuidとstateを設定します。
     #
     # 1.NEからアプリを起動した場合。
