@@ -18,3 +18,4 @@ Berksfile
 Berksfile.lock
 metadata.rb
 Vagrantfile
+.env
