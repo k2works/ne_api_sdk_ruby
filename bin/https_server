@@ -1,12 +1,26 @@
+require 'sinatra/base'
 require 'webrick'
 require 'webrick/https'
+require 'openssl'
+require 'ne_api_sdk_ruby'
 
-server = WEBrick::HTTPServer.new(
-    :BindAddress => '127.0.0.1',
-    :Port => 3000,
-    :DocumentRoot => '.',
-    :SSLEnable  => true,
-    :SSLCertificate => OpenSSL::X509::Certificate.new(open('/vagrant/.ssl/dev.crt.pem').read),
-    :SSLPrivateKey => OpenSSL::PKey::RSA.new(open('/vagrant/.ssl/dev.pem').read))
-Signal.trap('INT') { server.shutdown }
-server.start
+CERT_PATH = '.ssl/'
+
+webrick_options = {
+    :Port               => 8088,
+    :Logger             => WEBrick::Log::new($stderr, WEBrick::Log::DEBUG),
+    :DocumentRoot       => "/bin",
+    :SSLEnable          => true,
+    :SSLVerifyClient    => OpenSSL::SSL::VERIFY_NONE,
+    :SSLCertificate     => OpenSSL::X509::Certificate.new(  File.open(File.join(CERT_PATH, "dev.crt.pem")).read),
+    :SSLPrivateKey      => OpenSSL::PKey::RSA.new(          File.open(File.join(CERT_PATH, "dev.pem")).read),
+    :SSLCertName        => [ [ "CN",WEBrick::Utils::getservername ] ]
+}
+
+class MyServer  < Sinatra::Base
+  get '/' do
+    "Hellow, world!"
+  end
+end
+
+Rack::Handler::WEBrick.run MyServer, webrick_options
