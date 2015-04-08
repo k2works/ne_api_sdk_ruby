@@ -1,8 +1,13 @@
 require 'sinatra/base'
+require 'sinatra/reloader'
 require 'webrick'
 require 'webrick/https'
 require 'openssl'
+require 'pp'
+require 'yaml'
 require 'ne_api_sdk_ruby'
+require 'dotenv'
+Dotenv.load
 
 CERT_PATH = '.ssl/'
 
@@ -17,9 +22,27 @@ webrick_options = {
     :SSLCertName        => [ [ "CN",WEBrick::Utils::getservername ] ]
 }
 
+CLIENT_ID = ENV['NE_API_CLIENT_ID']
+CLIENT_SECRET = ENV['NE_API_CLIENT_SECRET']
+
 class MyServer  < Sinatra::Base
+  configure :development do
+    register Sinatra::Reloader
+  end
+
   get '/' do
-    "Hellow, world!"
+    redirect_uri = nil
+    client = NeApiSdkRuby::NeApiClient.new(CLIENT_ID, CLIENT_SECRET,redirect_uri)
+    redirect client.neLogin
+    #redirect 'https://base.next-engine.org/users/sign_in/?client_id=I8KoBFTgQeYlrz&client_secret=7woU3DaMP84Hsxq9uQmJVAjFZvyhKC5WnrfS1ONz&redirect_uri=https%3A%2F%2Flocalhost%3A8088%2Fne_api_sdk_php%2Flogin_only'
+  end
+
+  get '/ne_api_sdk_ruby/login_only' do
+    pp params['uid']
+    #pp params['state']
+    #redirect_uri = nil
+    #client = NeApiSdkRuby::NeApiClient.new(CLIENT_ID, CLIENT_SECRET,redirect_uri)
+    #client.neLogin
   end
 end
 

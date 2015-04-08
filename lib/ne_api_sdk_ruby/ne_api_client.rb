@@ -6,6 +6,7 @@
 # License:: Ruby License
 require 'faraday'
 require 'faraday_middleware'
+require 'simple_oauth'
 
 module NeApiSdkRuby
   class NeApiClient
@@ -90,7 +91,17 @@ module NeApiSdkRuby
     # @param	[string]	refresh_token	同上。
     # @return	void
     def initialize(client_id, client_secret, redirect_uri = nil, access_token = nil, refresh_token = nil)
+      @client_id = client_id
+      @client_secret = client_secret
+      @redirect_uri = redirect_uri
+      @access_token= access_token
+      @refresh_token= refresh_token
 
+      @conn = Faraday.new(:url => API_SERVER_HOST ) do |faraday|
+        faraday.request  :url_encoded             # form-encode POST params
+        faraday.response :logger                  # log requests to STDOUT
+        faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
+      end
     end
 =begin
 	public function __construct($client_id, $client_secret, $redirect_uri = NULL, $access_token = NULL, $refresh_token = NULL) {
@@ -199,8 +210,10 @@ module NeApiSdkRuby
     # @param	string	$redirect_uri	インスタンスを作成した後、リダイレクト先を変更したい
     #									場合のみ設定して下さい。
     # @return	array  NE APIのログイン後の基本情報。
-    def neLogin(redirect_uri)
-
+    def neLogin(redirect_uri = nil)
+      #params = {:uid => @uid, :status => @state}
+      #response = @conn.post PATH_OAUTH, params
+      redirectNeLogin
     end
 =begin
 	public function neLogin($redirect_uri = NULL) {
@@ -312,7 +325,47 @@ private
 	}
 =end
     def redirectNeLogin
+      return 'https://base.next-engine.org/users/sign_in/?client_id=I8KoBFTgQeYlrz&client_secret=7woU3DaMP84Hsxq9uQmJVAjFZvyhKC5WnrfS1ONz&redirect_uri=https%3A%2F%2Flocalhost%3A8088%2Fne_api_sdk_ruby%2Flogin_only'
+=begin
+      pp 'hoge'
+      print "HTTP/1.0 302 OAuth Redirection\n\n";
 
+      conn = Faraday::Connection.new(url: NE_SERVER_HOST ) do |builder|
+        builder.use Faraday::Request::UrlEncoded
+        builder.use Faraday::Response::Logger
+        builder.use Faraday::Adapter::NetHttp
+      end
+
+      response = conn.get do |request|
+        request.url PATH_LOGIN
+        request.headers = {
+            'Location:' => 'https://base.next-engine.org/users/sign_in/?client_id=I8KoBFTgQeYlrz&client_secret=7woU3DaMP84Hsxq9uQmJVAjFZvyhKC5WnrfS1ONz&redirect_uri=https%3A%2F%2Flocalhost%3A8088%2Fne_api_sdk_php%2Flogin_only'
+        }
+      end
+      pp response
+=end
+#      conn = Faraday.new(:url => NE_SERVER_HOST ) do |faraday|
+#        faraday.request  :url_encoded             # form-encode POST params
+#        faraday.response :logger                  # log requests to STDOUT
+#        faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
+#      end
+=begin
+      conn = Faraday.new NE_SERVER_HOST do |conn|
+        conn.request :oauth, {:Header => 'HTTP/1.0 302 OAuth Redirection'}
+#        conn.request :json
+
+#        conn.response :xml,  :content_type => /\bxml$/
+#        conn.response :json, :content_type => /\bjson$/
+
+#        conn.use :instrumentation
+        conn.adapter Faraday.default_adapter
+      end
+
+      @req = conn.get do |req|                           # GET http://sushi.com/search?page=2&limit=100
+        req.url PATH_LOGIN, {:client_id => @client_id, :client_secret => @client_secret}
+        #req.headers = 'HTTP/1.0 302 OAuth Redirection'
+      end
+=end
     end
 =begin
 	protected function redirectNeLogin() {

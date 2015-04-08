@@ -4,7 +4,13 @@ source 'https://rubygems.org'
 gemspec
 
 group :development do
-  gem 'sinatra'
+  gem 'sinatra', '~> 1.4.6'
+  gem 'sinatra-base'
+  gem 'rack'
+  gem 'tilt', '1.3.4'
+  gem 'sinatra-contrib'
+  gem 'dotenv'
+  gem 'simple_oauth'
   gem 'httpclient'
   gem 'rubocop'
   gem 'guard'

@@ -2,6 +2,12 @@
 
 require "bundler/setup"
 require 'ne_api_sdk_ruby'
+require 'dotenv'
+Dotenv.load
+
+CLIENT_ID = ENV['NE_API_CLIENT_ID']
+CLIENT_SECRET = ENV['NE_API_CLIENT_SECRET']
+
 
 # You can add fixtures and/or initialization code here to make experimenting
 # with your gem easier. You can also use a different console, if you like.
