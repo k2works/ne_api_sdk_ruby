@@ -18,4 +18,5 @@ group :development do
   gem 'terminal-notifier-guard'
   gem 'guard-yard', require: false
   gem 'guard-rspec', require: false
+  gem 'json_spec', '~> 1.1.4'
 end

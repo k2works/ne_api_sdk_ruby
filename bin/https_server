@@ -31,18 +31,22 @@ class MyServer  < Sinatra::Base
   end
 
   get '/' do
-    redirect_uri = nil
-    client = NeApiSdkRuby::NeApiClient.new(CLIENT_ID, CLIENT_SECRET,redirect_uri)
-    redirect client.neLogin
-    #redirect 'https://base.next-engine.org/users/sign_in/?client_id=I8KoBFTgQeYlrz&client_secret=7woU3DaMP84Hsxq9uQmJVAjFZvyhKC5WnrfS1ONz&redirect_uri=https%3A%2F%2Flocalhost%3A8088%2Fne_api_sdk_php%2Flogin_only'
+    login_uri = client.neLogin
+    redirect login_uri
   end
 
   get '/ne_api_sdk_ruby/login_only' do
-    pp params['uid']
-    #pp params['state']
+    client.neLogin(nil,params['uid'],params['state'])
+    pp params['state']
     #redirect_uri = nil
     #client = NeApiSdkRuby::NeApiClient.new(CLIENT_ID, CLIENT_SECRET,redirect_uri)
-    #client.neLogin
+  end
+
+  helpers do
+    def client
+      redirect_uri = 'https://localhost:8088/ne_api_sdk_ruby/login_only'
+      @client ||= NeApiSdkRuby::NeApiClient.new(CLIENT_ID, CLIENT_SECRET,redirect_uri)
+    end
   end
 end
 
