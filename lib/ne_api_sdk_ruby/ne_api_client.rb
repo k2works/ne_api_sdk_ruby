@@ -141,8 +141,36 @@ module NeApiSdkRuby
     # @param	string	$redirect_uri	インスタンスを作成した後、リダイレクト先を変更したい
     #									場合のみ設定して下さい。
     # @return	array  実行結果。内容は呼び出したAPIにより異なります。
-    def apiExecute(path, api_params, redirect_uri)
+    def apiExecute(path, uid,state,api_params = {}, redirect_uri = nil)
+      if !redirect_uri.nil?
+        @redirect_uri = redirect_uri
+      end
 
+      if @access_token.nil?
+        setUidAndState(uid,state)
+
+        response = setAccessToken
+        if response['result'] != RESULT_SUCCESS
+          return response
+        end
+      end
+
+      api_params['access_token'] = @access_token
+      if !@refresh_token.nil?
+        api_params['refresh_token'] = refresh_token
+      end
+
+      response = post(API_SERVER_HOST + path , api_params)
+
+      if response['access_token']
+        @access_token = response['access_token']
+      end
+      if response['refresh_token']
+        @refresh_token = response['refresh_token']
+      end
+
+      responseCheck(response)
+      return response
     end
 =begin
 	public function apiExecute($path, $api_params = array(), $redirect_uri = NULL) {
@@ -229,7 +257,7 @@ module NeApiSdkRuby
         params = {uid: @uid, state: @state}
 
         response = post(API_SERVER_HOST + PATH_OAUTH, params)
-        
+
         responseCheck(response)
 
         return response
@@ -308,7 +336,17 @@ private
     #
     # @return	array  access_token発行処理の実行結果。
     def setAccessToken
+      params = {uid: @uid, state: @state}
+      response = post(API_SERVER_HOST + PATH_OAUTH, params)
+      if !responseCheck(response)
+        return response
+      end
 
+      @access_token = response['access_token']
+      if( response['refresh_token'])
+        @refresh_token = response['refresh_token']
+      end
+      return response
     end
 =begin
 	protected function setAccessToken() {
