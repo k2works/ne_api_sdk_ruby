@@ -6,4 +6,5 @@ Dotenv.load
 
 RSpec.configure do |config|
   config.include JsonSpec::Helpers
+  config.include RSpec::RequestDescriber
 end

@@ -8,6 +8,7 @@ require 'faraday'
 require 'faraday_middleware'
 require 'simple_oauth'
 require 'uri'
+require 'json'
 
 module NeApiSdkRuby
   class NeApiClient
@@ -221,18 +222,14 @@ module NeApiSdkRuby
       if @uid.nil? or @state.nil?
         return redirectNeLogin
       else
-        params = {}
-        params['uid'] = @uid
-        params['state'] = @state
-#        pp params
+        params = {uid: @uid, state: @state}
+
+        response = post(API_SERVER_HOST + PATH_OAUTH, params)
+        
+        responseCheck(response)
+
+        return response
       end
-
-#      if @login.nil?
-
-#      end
-
-     # setUidAndState(uid,state)
-
     end
 =begin
 	public function neLogin($redirect_uri = NULL) {
@@ -325,7 +322,20 @@ private
 	}
 =end
     def responseCheck(response)
-
+      case response['result']
+        when RESULT_ERROR
+          return false
+        when RESULT_REDIRECT
+          if @redirect_uri.nil?
+            return false
+          else
+            redirectNeLogin
+          end
+        when RESULT_SUCCESS
+          return true
+        else
+          raise 'SDKで例外が発生しました。クライアントID・シークレットや指定したパスが正しいか確認して下さい'
+      end
     end
 =begin
 	protected function responseCheck($response) {
@@ -370,7 +380,8 @@ private
 	}
 =end
     def post(url, params)
-
+      response = @conn.post url , params
+      JSON.parse(response.body)
     end
 =begin
 	protected function post($url, $params) {

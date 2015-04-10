@@ -36,8 +36,8 @@ class MyServer  < Sinatra::Base
   end
 
   get '/ne_api_sdk_ruby/login_only' do
-    client.neLogin(nil,params['uid'],params['state'])
-    pp params['state']
+    response = client.neLogin(nil,params['uid'],params['state'])
+    response.to_json
     #redirect_uri = nil
     #client = NeApiSdkRuby::NeApiClient.new(CLIENT_ID, CLIENT_SECRET,redirect_uri)
   end

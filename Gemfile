@@ -19,4 +19,6 @@ group :development do
   gem 'guard-yard', require: false
   gem 'guard-rspec', require: false
   gem 'json_spec', '~> 1.1.4'
+  gem "rspec-request_describer"
+  gem "rack-test"
 end
