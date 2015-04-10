@@ -42,6 +42,14 @@ class MyServer  < Sinatra::Base
     #client = NeApiSdkRuby::NeApiClient.new(CLIENT_ID, CLIENT_SECRET,redirect_uri)
   end
 
+  get '/ne_api_sdk_ruby/api_find' do
+    #////////////////////////////////////////////////////////////////////////////////
+    #// 契約企業一覧を取得するサンプル
+    #////////////////////////////////////////////////////////////////////////////////
+    under_contract_company = client.apiExecuteNoRequiredLogin('/api_app/company')
+    under_contract_company.to_json
+  end
+
   helpers do
     def client
       redirect_uri = 'https://localhost:8088/ne_api_sdk_ruby/login_only'

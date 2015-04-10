@@ -190,8 +190,12 @@ module NeApiSdkRuby
     #									パラメータが不要な場合、省略又はNULLを指定して下さい。
     #
     # @return	array  実行結果。内容は呼び出したAPIにより異なります。
-    def apiExecuteNoRequiredLogin(path, api_params)
+    def apiExecuteNoRequiredLogin(path, api_params = {})
+      api_params['client_id'] = @client_id
+      api_params['client_secret'] = @client_secret
 
+      response = post(API_SERVER_HOST + path, api_params)
+      return response
     end
 =begin
 	public function apiExecuteNoRequiredLogin($path, $api_params = array()) {
