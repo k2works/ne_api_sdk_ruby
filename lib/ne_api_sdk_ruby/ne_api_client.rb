@@ -141,7 +141,7 @@ module NeApiSdkRuby
     # @param	string	$redirect_uri	インスタンスを作成した後、リダイレクト先を変更したい
     #									場合のみ設定して下さい。
     # @return	array  実行結果。内容は呼び出したAPIにより異なります。
-    def apiExecute(path, uid,state,api_params = {}, redirect_uri = nil)
+    def apiExecute(uid,state,path,api_params = {}, redirect_uri = nil)
       if !redirect_uri.nil?
         @redirect_uri = redirect_uri
       end
@@ -244,7 +244,7 @@ module NeApiSdkRuby
     # @param	string	$redirect_uri	インスタンスを作成した後、リダイレクト先を変更したい
     #									場合のみ設定して下さい。
     # @return	array  NE APIのログイン後の基本情報。
-    def neLogin(redirect_uri = nil,uid = nil,state = nil)
+    def neLogin(uid = nil,state = nil,redirect_uri = nil)
       if @redirect_uri.nil?
         @redirect_uri = redirect_uri
       end
