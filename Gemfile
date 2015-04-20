@@ -21,4 +21,7 @@ group :development do
   gem 'json_spec', '~> 1.1.4'
   gem "rspec-request_describer"
   gem "rack-test"
+  gem 'capybara'
+  gem 'launchy'
+  gem 'selenium-webdriver'
 end

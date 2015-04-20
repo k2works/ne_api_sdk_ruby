@@ -1,33 +1,15 @@
 require 'sinatra/base'
 require 'sinatra/reloader'
-require 'webrick'
-require 'webrick/https'
-require 'openssl'
 require 'pp'
-require 'yaml'
-require 'ne_api_sdk_ruby'
 require 'dotenv'
 Dotenv.load
-
-CERT_PATH = '.ssl/'
-
-webrick_options = {
-    :Port               => 8088,
-    :Logger             => WEBrick::Log::new($stderr, WEBrick::Log::DEBUG),
-    :DocumentRoot       => "/bin",
-    :SSLEnable          => true,
-    :SSLVerifyClient    => OpenSSL::SSL::VERIFY_NONE,
-    :SSLCertificate     => OpenSSL::X509::Certificate.new(  File.open(File.join(CERT_PATH, "dev.crt.pem")).read),
-    :SSLPrivateKey      => OpenSSL::PKey::RSA.new(          File.open(File.join(CERT_PATH, "dev.pem")).read),
-    :SSLCertName        => [ [ "CN",WEBrick::Utils::getservername ] ]
-}
 
 CLIENT_ID = ENV['NE_API_CLIENT_ID']
 CLIENT_SECRET = ENV['NE_API_CLIENT_SECRET']
 END_POINT = 'ne_api_sdk_ruby'
 REDIRECT_URL = 'https://localhost:8088/' + END_POINT
 
-class MyServer  < Sinatra::Base
+class SampleApp  < Sinatra::Base
   configure :development do
     register Sinatra::Reloader
   end
@@ -117,5 +99,3 @@ class MyServer  < Sinatra::Base
     end
   end
 end
-
-Rack::Handler::WEBrick.run MyServer, webrick_options
