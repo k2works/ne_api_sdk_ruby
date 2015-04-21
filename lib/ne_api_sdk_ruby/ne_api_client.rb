@@ -4,12 +4,6 @@
 # Author:: K.Kakigi
 # Version:: 0.1.0
 # License:: Ruby License
-require 'faraday'
-require 'faraday_middleware'
-require 'simple_oauth'
-require 'uri'
-require 'json'
-
 module NeApiSdkRuby
   class NeApiClient
     # 利用するサーバーのURLのスキーム＋ホスト名の定義

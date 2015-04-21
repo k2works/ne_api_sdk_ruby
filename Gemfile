@@ -6,11 +6,9 @@ gemspec
 group :development do
   gem 'sinatra', '~> 1.4.6'
   gem 'sinatra-base'
-  gem 'rack'
-  gem 'tilt', '1.3.4'
   gem 'sinatra-contrib'
+  gem 'tilt', '1.3.4'
   gem 'dotenv'
-  gem 'simple_oauth'
   gem 'httpclient'
   gem 'rubocop'
   gem 'guard'
@@ -18,9 +16,10 @@ group :development do
   gem 'terminal-notifier-guard'
   gem 'guard-yard', require: false
   gem 'guard-rspec', require: false
-  gem 'json_spec', '~> 1.1.4'
-  gem "rspec-request_describer"
-  gem "rack-test"
+end
+
+group :test do
+  gem 'rack-test'
   gem 'capybara'
   gem 'launchy'
   gem 'selenium-webdriver'
